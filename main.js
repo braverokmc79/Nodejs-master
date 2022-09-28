@@ -4,11 +4,13 @@ const path = require('path');
 const sanitizeHtml = require('sanitize-html');
 const fs = require('fs');
 const bodyParser = require('body-parser')
+const compression = require('compression')
 const app = express()
 const port = 3000
 
 
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(compression());
 
 app.get('/', (req, res) => {
 
