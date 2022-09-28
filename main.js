@@ -7,7 +7,8 @@ const indexRouter = require("./routes/index");
 const topicRouter = require("./routes/topic");
 const app = express()
 const port = 3000
-
+const helmet = require('helmet')
+app.use(helmet())
 
 app.use(express.static('public'))
 app.use(bodyParser.urlencoded({ extended: false }));
