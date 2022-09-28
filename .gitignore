@@ -2,7 +2,7 @@
 
 # dependencies
 /node_modules
-/webserver_t/node_modules
+/gen/myapp/node_modules
 /.pnp
 .pnp.js
 
