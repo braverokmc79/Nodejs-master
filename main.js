@@ -3,10 +3,11 @@ const template = require('./lib/template.js');
 const fs = require('fs');
 const bodyParser = require('body-parser')
 const compression = require('compression')
+const indexRouter = require("./routes/index");
 const topicRouter = require("./routes/topic");
-
 const app = express()
 const port = 3000
+
 
 app.use(express.static('public'))
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -19,29 +20,8 @@ app.get('*', (req, res, next) => {
 
 });
 
+app.use("/", indexRouter);
 app.use('/topic', topicRouter);
-
-
-
-app.get('/', (req, res) => {
-  const title = 'Welcome';
-  const description = 'Hello, Node.js';
-  const list = template.list(req.list);
-  const html = template.HTML(title, list,
-    `<h2>${title}</h2>${description}   
-     <img src="/images/hello.jpg" style="width:300px; display:block; margin-top:10px" >
-    `,
-    `<a href="/topic/create">create</a>`
-  );
-  res.send(html);
-})
-
-
-
-
-
-
-
 
 app.use(function (req, res) {
   res.status(400).send("Sorry cant find that!");
