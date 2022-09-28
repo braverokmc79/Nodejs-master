@@ -14,7 +14,7 @@ https://macaronics.net/index.php/m03/nodejs/view/1939
 </div>
         <p class="cd-body__description">이 수업은 Node.js의 대표 웹프레임워크인 Express를 이용해서 웹애플리케이션을 구현하는 방법에 대한 수업입니다.</p>
         
-<div><div class="iframe_container" style="padding:56.25% 0 0 0; position: relative;"><iframe src="https://www.youtube.com/embed/1ee5vAou2Y0?rel=0&amp;modestbranding=1&amp;vq=hd720" width="100%" height="100%" frameborder="0" allowfullscreen="allowfullscreen" style="position: absolute; inset: 0px; height: 100%; width: 100%;"></iframe></div></div>
+<div></div></div>
 <div>
 <h2>WEB2 - Node.js &amp; Express</h2>
 이 수업은 Node.js의 대표 웹프레임워크인 Express를 이용해서 웹애플리케이션을 구현하는 방법에 대한 수업입니다. 코드가 복잡해지면 점차 애플리케이션을 구현하는 것이 고된 일이 됩니다. 이런 상황에서 코드의 복잡성을 낮춰주고, 웹애플리케이션을 구현하는 과정에서 공통적으로 요구되는 일들을 대신해주는 것이 프레임워크입니다. 코드의 복잡성 때문에 고통받고 계신 분에게 이 수업을 권합니다.</div>
