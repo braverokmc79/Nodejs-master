@@ -35,10 +35,12 @@ app.get('/', (req, res) => {
 })
 
 
-app.get('/page/:pageId', (req, res) => {
+app.get('/page/:pageId', (req, res, next) => {
 
   const filteredId = path.parse(req.params.pageId).base;
   fs.readFile(`data/${filteredId}`, 'utf8', function (err, description) {
+    if (err) return next(err);
+
     const title = filteredId;
     const sanitizedTitle = sanitizeHtml(title);
     const sanitizedDescription = sanitizeHtml(description, {
@@ -48,13 +50,15 @@ app.get('/page/:pageId', (req, res) => {
     const html = template.HTML(sanitizedTitle, list,
       `<h2>${sanitizedTitle}</h2>${sanitizedDescription}`,
       ` <a href="/create">create</a>
-                <a href="/update/${sanitizedTitle}">update</a>
-                <form action="/delete_process" method="post">
-                  <input type="hidden" name="id" value="${sanitizedTitle}">
-                  <input type="submit" value="delete">
-                </form>`
+                  <a href="/update/${sanitizedTitle}">update</a>
+                  <form action="/delete_process" method="post">
+                    <input type="hidden" name="id" value="${sanitizedTitle}">
+                    <input type="submit" value="delete">
+                  </form>`
     );
     res.send(html);
+
+
   });
 
 
@@ -146,6 +150,15 @@ app.post("/delete_process", (req, res) => {
 });
 
 
+
+app.use(function (req, res) {
+  res.status(400).send("Sorry cant find that!");
+});
+
+app.use((err, req, res, next) => {
+  console.error(err.stack)
+  res.status(500).send('Something broke!')
+})
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
