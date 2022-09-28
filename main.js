@@ -20,8 +20,8 @@ app.get('/', (req, res) => {
 })
 
 
-app.get('/page', (req, res) => {
-  res.send("/page");
+app.get('/page/:pageId', (req, res) => {
+  res.send(req.params);
 });
 
 
