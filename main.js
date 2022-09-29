@@ -1,10 +1,10 @@
 const express = require('express')
-const template = require('./lib/template.js');
 const fs = require('fs');
 const bodyParser = require('body-parser')
 const compression = require('compression')
 const indexRouter = require("./routes/index");
 const topicRouter = require("./routes/topic");
+const authRouter = require("./routes/auth");
 const app = express()
 const port = 3000
 const helmet = require('helmet')
@@ -23,6 +23,7 @@ app.get('*', (req, res, next) => {
 
 app.use("/", indexRouter);
 app.use('/topic', topicRouter);
+app.use('/auth', authRouter);
 
 app.use(function (req, res) {
   res.status(400).send("Sorry cant find that!");
