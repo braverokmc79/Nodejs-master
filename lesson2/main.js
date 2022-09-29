@@ -5,6 +5,8 @@ var qs = require('querystring');
 var template = require('./lib/template.js');
 var path = require('path');
 var sanitizeHtml = require('sanitize-html');
+const cookie = require("cookie");
+
 
 var app = http.createServer(function (request, response) {
   var _url = request.url;
@@ -152,6 +154,28 @@ var app = http.createServer(function (request, response) {
       response.end(html);
     });
 
+  } else if (pathname == '/login_process') {
+    var body = '';
+    request.on('data', function (data) {
+      body = body + data;
+    });
+    request.on('end', function () {
+      var post = qs.parse(body);
+      if (post.email === 'egoing777@gmail.com' && post.password === "1111") {
+        response.writeHead(302, {
+          'Set-Cookie': [
+            `email=${post.email}`,
+            `password=${post.password}`,
+            'nickname=egoing'
+          ],
+          Location: `/`
+        });
+        response.end();
+      } else {
+        response.end("who?");
+      }
+
+    });
 
   } else {
     response.writeHead(404);
