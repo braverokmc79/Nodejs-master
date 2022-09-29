@@ -4,7 +4,7 @@ const template = require('../lib/template.js');
 const path = require('path');
 const sanitizeHtml = require('sanitize-html');
 const fs = require('fs');
-const auth = require("../lib/auth.js")
+const auth = require("../lib/auth")
 
 
 router.get("/create", (req, res) => {
@@ -21,13 +21,16 @@ router.get("/create", (req, res) => {
                 <input type="submit">
               </p>
             </form>
-          `, '', auth.authStatusUI(req, res));
+          `, '', auth.statusUI(req, res));
   res.send(html);
 
 });
 
 
 router.post("/create_process", (req, res) => {
+
+  if (!auth.isOwner(req, res)) return res.redirect("/");
+
   const post = req.body;
   const title = post.title;
   const description = post.description;
@@ -40,6 +43,9 @@ router.post("/create_process", (req, res) => {
 
 
 router.get("/update/:pageId", (req, res) => {
+  if (!auth.isOwner(req, res)) return res.redirect("/");
+
+
   const filteredId = path.parse(req.params.pageId).base;
 
   fs.readFile(`data/${filteredId}`, 'utf8', function (err, description) {
@@ -59,7 +65,7 @@ router.get("/update/:pageId", (req, res) => {
               </form>
               `,
       `<a href="/topic/create">create</a> <a href="/topic/update/${title}">update</a>`,
-      auth.authStatusUI(req, res)
+      auth.statusUI(req, res)
     );
     res.send(html);
   });
@@ -68,6 +74,9 @@ router.get("/update/:pageId", (req, res) => {
 
 
 router.post("/update_process", (req, res) => {
+  if (!auth.isOwner(req, res)) return res.redirect("/");
+
+
   const post = req.body;
   const id = post.id;
   const title = post.title;
@@ -82,6 +91,9 @@ router.post("/update_process", (req, res) => {
 
 
 router.post("/delete_process", (req, res) => {
+  if (!auth.isOwner(req, res)) return res.redirect("/");
+
+
   const post = req.body;
   const id = post.id;
   const filteredId = path.parse(id).base;
@@ -111,7 +123,7 @@ router.get('/:pageId', (req, res, next) => {
                     <input type="hidden" name="id" value="${sanitizedTitle}">
                     <input type="submit" value="delete">
                   </form>`,
-      auth.authStatusUI(req, res)
+      auth.statusUI(req, res)
     );
     res.send(html);
 

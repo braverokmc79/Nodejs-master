@@ -20,7 +20,7 @@ router.get("/login", (req, res) => {
                 <input type="submit" value="login">
               </p>
             </form>
-          `, '', auth.authStatusUI(req, res));
+          `, '', auth.statusUI(req, res));
   res.send(html);
 
 });
