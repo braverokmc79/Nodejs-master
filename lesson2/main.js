@@ -18,8 +18,15 @@ function authentication(request, response) {
   if (cookies.email === "egoing777@gmail.com" && cookies.password === "1111") {
     isOwner = true;
   }
-
   return isOwner;
+}
+
+function authStatusUI(request, response) {
+  var authStatusUI = '<a href="/login">login</a>';
+  if (authentication(request, response)) {
+    authStatusUI = '<a href="/logout_process">logout</a>';
+  }
+  return authStatusUI;
 }
 
 var app = http.createServer(function (request, response) {
@@ -27,8 +34,7 @@ var app = http.createServer(function (request, response) {
   var queryData = url.parse(_url, true).query;
   var pathname = url.parse(_url, true).pathname;
 
-  var isOwner = authentication(request, response);
-  console.log("isOwner : ", isOwner);
+
 
 
   if (pathname === '/') {
@@ -39,7 +45,8 @@ var app = http.createServer(function (request, response) {
         var list = template.list(filelist);
         var html = template.HTML(title, list,
           `<h2>${title}</h2>${description}`,
-          `<a href="/create">create</a>`
+          `<a href="/create">create</a>`,
+          authStatusUI(request, response)
         );
         response.writeHead(200);
         response.end(html);
@@ -61,7 +68,8 @@ var app = http.createServer(function (request, response) {
                 <form action="delete_process" method="post">
                   <input type="hidden" name="id" value="${sanitizedTitle}">
                   <input type="submit" value="delete">
-                </form>`
+                </form>`,
+            authStatusUI(request, response)
           );
           response.writeHead(200);
           response.end(html);
@@ -82,7 +90,7 @@ var app = http.createServer(function (request, response) {
               <input type="submit">
             </p>
           </form>
-        `, '');
+        `, '', authStatusUI(request, response));
       response.writeHead(200);
       response.end(html);
     });
@@ -119,7 +127,8 @@ var app = http.createServer(function (request, response) {
               </p>
             </form>
             `,
-          `<a href="/create">create</a> <a href="/update?id=${title}">update</a>`
+          `<a href="/create">create</a> <a href="/update?id=${title}">update</a>`,
+          authStatusUI(request, response)
         );
         response.writeHead(200);
         response.end(html);
@@ -168,7 +177,7 @@ var app = http.createServer(function (request, response) {
             <p><input type="submit" value="로그인"></p>
           </form>
          
-        `, ' <a href="/create">create</a>');
+        `, ' <a href="/create">create</a>', authStatusUI(request, response));
       response.writeHead(200);
       response.end(html);
     });
