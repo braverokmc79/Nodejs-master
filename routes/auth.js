@@ -45,7 +45,15 @@ router.post("/login_process", (req, res) => {
 
 
 
+router.get("/logout", (req, res) => {
+  req.session.destroy(function (err) {
+    res.redirect("/");
+  })
+});
+
+
 module.exports = router;
+
 
 /*
 router.get("/create", (req, res) => {
