@@ -8,10 +8,29 @@ var sanitizeHtml = require('sanitize-html');
 const cookie = require("cookie");
 
 
+function authentication(request, response) {
+  var isOwner = false;
+  var cookies = {}
+  if (request.headers.cookie) {
+    cookies = cookie.parse(request.headers.cookie);
+  }
+  console.log("cookies  :", cookies);
+  if (cookies.email === "egoing777@gmail.com" && cookies.password === "1111") {
+    isOwner = true;
+  }
+
+  return isOwner;
+}
+
 var app = http.createServer(function (request, response) {
   var _url = request.url;
   var queryData = url.parse(_url, true).query;
   var pathname = url.parse(_url, true).pathname;
+
+  var isOwner = authentication(request, response);
+  console.log("isOwner : ", isOwner);
+
+
   if (pathname === '/') {
     if (queryData.id === undefined) {
       fs.readdir('./data', function (error, filelist) {
