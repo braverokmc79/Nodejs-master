@@ -5,8 +5,8 @@ const compression = require('compression')
 const indexRouter = require("./routes/index");
 const topicRouter = require("./routes/topic");
 const authRouter = require("./routes/auth");
-var session = require('express-session')
-var FileStore = require('session-file-store')(session);
+const session = require('express-session')
+const FileStore = require('session-file-store')(session);
 
 
 const app = express()
@@ -22,6 +22,9 @@ app.use(session({
   saveUninitialized: true,
   store: new FileStore()
 }))
+const passport = require('passport');
+const LocalStrategy = require('passport-local');
+
 
 app.use(express.static('public'))
 app.use(bodyParser.urlencoded({ extended: false }));
