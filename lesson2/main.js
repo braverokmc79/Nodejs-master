@@ -205,6 +205,22 @@ var app = http.createServer(function (request, response) {
 
     });
 
+  } else if (pathname == '/logout_process') {
+    request.on('data', function (data) {
+      body = body + data;
+    });
+    request.on('end', function () {
+      response.writeHead(302, {
+        'Set-Cookie': [
+          `email=; Max-Age=0`,
+          `password=; Max-Age=0`,
+          'nickname=; Max-Age=0'
+        ],
+        Location: `/`
+      });
+      response.end();
+    });
+
   } else {
     response.writeHead(404);
     response.end('Not found');
