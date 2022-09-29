@@ -4,14 +4,14 @@ const template = require('../lib/template.js');
 const path = require('path');
 const sanitizeHtml = require('sanitize-html');
 const fs = require('fs');
-
+const auth = require("../lib/auth.js")
 
 
 router.get("/create", (req, res) => {
 
-    const title = 'WEB - create';
-    const list = template.list(req.list);
-    const html = template.HTML(title, list, `
+  const title = 'WEB - create';
+  const list = template.list(req.list);
+  const html = template.HTML(title, list, `
             <form action="/topic/create_process" method="post">
               <p><input type="text" name="title" placeholder="title"></p>
               <p>
@@ -21,32 +21,32 @@ router.get("/create", (req, res) => {
                 <input type="submit">
               </p>
             </form>
-          `, '');
-    res.send(html);
+          `, '', auth.authStatusUI(req, res));
+  res.send(html);
 
 });
 
 
 router.post("/create_process", (req, res) => {
-    const post = req.body;
-    const title = post.title;
-    const description = post.description;
-    fs.writeFile(`data/${title}`, description, 'utf8', function (err) {
-        res.redirect(`/topic/${title}`);
-    });
+  const post = req.body;
+  const title = post.title;
+  const description = post.description;
+  fs.writeFile(`data/${title}`, description, 'utf8', function (err) {
+    res.redirect(`/topic/${title}`);
+  });
 
 });
 
 
 
 router.get("/update/:pageId", (req, res) => {
-    const filteredId = path.parse(req.params.pageId).base;
+  const filteredId = path.parse(req.params.pageId).base;
 
-    fs.readFile(`data/${filteredId}`, 'utf8', function (err, description) {
-        const title = filteredId;
-        const list = template.list(req.list);
-        const html = template.HTML(title, list,
-            `
+  fs.readFile(`data/${filteredId}`, 'utf8', function (err, description) {
+    const title = filteredId;
+    const list = template.list(req.list);
+    const html = template.HTML(title, list,
+      `
               <form action="/topic/update_process" method="post">
                 <input type="hidden" name="id" value="${title}">
                 <p><input type="text" name="title" placeholder="title" value="${title}"></p>
@@ -58,63 +58,65 @@ router.get("/update/:pageId", (req, res) => {
                 </p>
               </form>
               `,
-            `<a href="/topic/create">create</a> <a href="/topic/update/${title}">update</a>`
-        );
-        res.send(html);
-    });
+      `<a href="/topic/create">create</a> <a href="/topic/update/${title}">update</a>`,
+      auth.authStatusUI(req, res)
+    );
+    res.send(html);
+  });
 
 });
 
 
 router.post("/update_process", (req, res) => {
-    const post = req.body;
-    const id = post.id;
-    const title = post.title;
-    const description = post.description;
-    fs.rename(`data/${id}`, `data/${title}`, function (error) {
-        fs.writeFile(`data/${title}`, description, 'utf8', function (err) {
-            res.redirect(`/topic/${title}`);
-        })
-    });
+  const post = req.body;
+  const id = post.id;
+  const title = post.title;
+  const description = post.description;
+  fs.rename(`data/${id}`, `data/${title}`, function (error) {
+    fs.writeFile(`data/${title}`, description, 'utf8', function (err) {
+      res.redirect(`/topic/${title}`);
+    })
+  });
 
 })
 
 
 router.post("/delete_process", (req, res) => {
-    const post = req.body;
-    const id = post.id;
-    const filteredId = path.parse(id).base;
-    fs.unlink(`data/${filteredId}`, function (error) {
-        res.redirect("/");
-    })
+  const post = req.body;
+  const id = post.id;
+  const filteredId = path.parse(id).base;
+  fs.unlink(`data/${filteredId}`, function (error) {
+    res.redirect("/");
+  })
 });
 
 
 router.get('/:pageId', (req, res, next) => {
 
-    const filteredId = path.parse(req.params.pageId).base;
-    fs.readFile(`data/${filteredId}`, 'utf8', function (err, description) {
-        if (err) return next(err);
+  const filteredId = path.parse(req.params.pageId).base;
+  fs.readFile(`data/${filteredId}`, 'utf8', function (err, description) {
+    if (err) return next(err);
 
-        const title = filteredId;
-        const sanitizedTitle = sanitizeHtml(title);
-        const sanitizedDescription = sanitizeHtml(description, {
-            allowedTags: ['h1']
-        });
-        const list = template.list(req.list);
-        const html = template.HTML(sanitizedTitle, list,
-            `<h2>${sanitizedTitle}</h2>${sanitizedDescription}`,
-            ` <a href="/topic/create">create</a>
+    const title = filteredId;
+    const sanitizedTitle = sanitizeHtml(title);
+    const sanitizedDescription = sanitizeHtml(description, {
+      allowedTags: ['h1']
+    });
+    const list = template.list(req.list);
+    const html = template.HTML(sanitizedTitle, list,
+      `<h2>${sanitizedTitle}</h2>${sanitizedDescription}`,
+      ` <a href="/topic/create">create</a>
                   <a href="/topic/update/${sanitizedTitle}">update</a>
                   <form action="/topic/delete_process" method="post">
                     <input type="hidden" name="id" value="${sanitizedTitle}">
                     <input type="submit" value="delete">
-                  </form>`
-        );
-        res.send(html);
+                  </form>`,
+      auth.authStatusUI(req, res)
+    );
+    res.send(html);
 
 
-    });
+  });
 });
 
 

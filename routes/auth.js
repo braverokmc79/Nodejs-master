@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const template = require('../lib/template.js');
+const auth = require("../lib/auth.js")
 
 const authData = {
   email: "egoing777@gmail.com",
@@ -19,7 +20,7 @@ router.get("/login", (req, res) => {
                 <input type="submit" value="login">
               </p>
             </form>
-          `, '');
+          `, '', auth.authStatusUI(req, res));
   res.send(html);
 
 });
