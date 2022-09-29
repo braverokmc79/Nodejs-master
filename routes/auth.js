@@ -1,9 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const template = require('../lib/template.js');
-const path = require('path');
-const sanitizeHtml = require('sanitize-html');
-const fs = require('fs');
 
 const authData = {
   email: "egoing777@gmail.com",
@@ -34,12 +31,15 @@ router.post("/login_process", (req, res) => {
   const password = post.password;
 
   if (email === authData.email && password === authData.password) {
-
-    res.send("Welcome!");
-    //res.redirect("/");
+    req.session.is_logined = true;
+    req.session.nickname = 'egoing';
+    req.session.save(function () {
+      res.redirect('/');
+    });
   } else {
     res.send("Who?");
   }
+
 });
 
 

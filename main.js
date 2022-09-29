@@ -5,14 +5,29 @@ const compression = require('compression')
 const indexRouter = require("./routes/index");
 const topicRouter = require("./routes/topic");
 const authRouter = require("./routes/auth");
+var session = require('express-session')
+var FileStore = require('session-file-store')(session);
+
+
 const app = express()
 const port = 3000
 const helmet = require('helmet')
+
+
+
 app.use(helmet())
+app.use(session({
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: true,
+  store: new FileStore()
+}))
 
 app.use(express.static('public'))
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(compression());
+
+
 app.get('*', (req, res, next) => {
   fs.readdir('./data', function (error, filelist) {
     req.list = filelist;
@@ -20,6 +35,7 @@ app.get('*', (req, res, next) => {
   });
 
 });
+
 
 app.use("/", indexRouter);
 app.use('/topic', topicRouter);
